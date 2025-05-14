@@ -1,34 +1,67 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  Headers,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { CreateAuthDto } from './dto/create-auth.dto';
-import { UpdateAuthDto } from './dto/update-auth.dto';
+
+import { AuthGuard } from 'src/core/guards/auth.guard';
+import { UserIdDecorator } from 'src/core/decorators/userid.decorator';
+import { AuthRegisterDTO } from './dto/auth-register.dto';
+import { AuthForgetDTO } from './dto/auth-forget.dto';
+import { AuthLoginDTO } from './dto/auth-login.dto';
 
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @Post()
-  create(@Body() createAuthDto: CreateAuthDto) {
-    return this.authService.create(createAuthDto);
+
+
+  @Post('v1/register')
+  register(@Body() registerAuthDto: AuthRegisterDTO) {
+    return this.authService.register(registerAuthDto);
+  }
+''
+  @Post('v1/signIn')
+  signIn(@Body() loginAuthDto: AuthForgetDTO) {
+    // console.log(loginAuthDto.EMAIL_DE_LOGIN, loginAuthDto.SENHA);
+   // return this.authService.signIn(AuthLoginDTO);
   }
 
-  @Get()
-  findAll() {
-    return this.authService.findAll();
+  @Post('v1/forgetPassword')
+  forget(@Body() ForgetAuthDto: AuthForgetDTO) {
+   // return this.authService.forget(ForgetAuthDto.EMAIL_DE_LOGIN);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.authService.findOne(+id);
+  @Post('v1/resetPassword')
+  reset(@Body() ResetAuthDto: AuthForgetDTO) {
+   // return this.authService.reset(ResetAuthDto.token, ResetAuthDto.SENHA);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateAuthDto: UpdateAuthDto) {
-    return this.authService.update(+id, updateAuthDto);
+  @UseGuards(AuthGuard)
+  @Post('v1/me')
+  me(@UserIdDecorator() user) {
+    //console.log('headers: ', user.id);
+    try {
+      return this.authService.validateUser(user);
+    } catch (e) {
+      return e;
+    }
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.authService.remove(+id);
+  @Post('v1/checkToken')
+  async checkToken(@Req() Req, @Headers('authorization') headers) {
+    console.log('Req.tokenPayload: ', Req.tokenPayload);
+    //  Req.tokenPayload essa propriedade foi criada no jwt.auth.guard.ts
+    //  O decorator @User foi criado manualmente]
+    // Não precisa retornar os dados do usuário em uma verificação de token
+    // O guard JwtAuthGuard é interessante porque posso colocar nos controles ou diretamente nas rotas
+
+    const token = headers.authorization.split(' ')[1];
+    return this.authService.checkToken(token);
+    // return {message: 'Token Success', data: Req.tokenPayload, user: Req.user};
   }
 }
