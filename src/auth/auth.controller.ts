@@ -12,33 +12,30 @@ import { AuthGuard } from 'src/core/guards/auth.guard';
 import { UserIdDecorator } from 'src/core/decorators/userid.decorator';
 import { AuthRegisterDTO } from './dto/auth-register.dto';
 import { AuthForgetDTO } from './dto/auth-forget.dto';
-import { AuthLoginDTO } from './dto/auth-login.dto';
 
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-
-
   @Post('v1/register')
   register(@Body() registerAuthDto: AuthRegisterDTO) {
     return this.authService.register(registerAuthDto);
   }
-''
+  '';
   @Post('v1/signIn')
   signIn(@Body() loginAuthDto: AuthForgetDTO) {
     // console.log(loginAuthDto.EMAIL_DE_LOGIN, loginAuthDto.SENHA);
-   // return this.authService.signIn(AuthLoginDTO);
+    // return this.authService.signIn(AuthLoginDTO);
   }
 
   @Post('v1/forgetPassword')
   forget(@Body() ForgetAuthDto: AuthForgetDTO) {
-   // return this.authService.forget(ForgetAuthDto.EMAIL_DE_LOGIN);
+    // return this.authService.forget(ForgetAuthDto.EMAIL_DE_LOGIN);
   }
 
   @Post('v1/resetPassword')
   reset(@Body() ResetAuthDto: AuthForgetDTO) {
-   // return this.authService.reset(ResetAuthDto.token, ResetAuthDto.SENHA);
+    // return this.authService.reset(ResetAuthDto.token, ResetAuthDto.SENHA);
   }
 
   @UseGuards(AuthGuard)

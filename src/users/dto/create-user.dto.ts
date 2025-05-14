@@ -1,30 +1,48 @@
-import { IsString, IsEmail, MinLength, IsOptional, IsDateString, IsEnum } from "class-validator";
-import { RoleEnum } from "src/core/enums/role.enum";
+import {
+  IsString,
+  IsEmail,
+  MinLength,
+  IsOptional,
+  IsDateString,
+  IsEnum,
+  IsUUID,
+  IsInt,
+} from 'class-validator';
+import { Timestamp } from 'rxjs';
+import { RoleEnum } from 'src/core/enums/role.enum';
+import { UUIDTypes } from 'uuid';
 
 export class CreateUserDTO {
+  @IsOptional()
+  @IsInt()
+  id?: number;
 
-    @IsString()
-    name: string;
+  @IsOptional()
+  @IsUUID(4, { message: 'ID_UUID must be a valid UUIDv4' })
+  uuid: string;
 
-    @IsEmail()
-    email: string;
+  @IsString()
+  name: string;
 
-    @IsString()
-    @MinLength(6)
-    password: string;
+  @IsOptional()
+  @IsEmail()
+  email: string;
 
-    @IsOptional()
-    @IsDateString()
-    birthAt: Date;
+  @IsOptional()
+  @IsString()
+  @MinLength(6)
+  password: string;
 
-    @IsOptional()
-    @IsEnum(RoleEnum)
-    role: number;
+  @IsOptional()
+  birthAt: Date;
 
-     @IsOptional()
-    createdAt: Date;
+  @IsOptional()
+  @IsEnum(RoleEnum)
+  role: number;
 
-     @IsOptional()
-    updatedAt: Date;
-r
+  @IsOptional()
+  createdAt: Date;
+
+  @IsOptional()
+  updatedAt: Date;
 }
