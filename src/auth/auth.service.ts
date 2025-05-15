@@ -25,12 +25,14 @@ export class AuthService {
     private readonly userService: UsersService,
   ) {}
 
-  createToken(id: number) {    return {
+  createToken(id: number) {
+    return {
       accessToken: this.jwtService.sign(
         {
           //Payload
-          id: id,
-     // Removed because user.role does not exist
+          sub: id,
+          username: 'user.name',
+          // Removed because user.role does not exist
         },
         {
           //options
@@ -44,7 +46,7 @@ export class AuthService {
   }
 
   checkToken(token: string) {
-      try {
+    try {
       const data = this.jwtService.verify(token, {
         issuer: this.issuer, //verifica se o token foi emitido pelo servidor
         audience: this.audience, // verifica se o token é para o usuário
@@ -55,7 +57,6 @@ export class AuthService {
       throw new BadRequestException(e);
     }
   }
-
 
   isValidToken(token: string) {
     // rota que válida o token
@@ -79,33 +80,28 @@ export class AuthService {
   async register(useRegister: AuthRegisterDTO) {
     const user = await this.userService.create(useRegister);
 
-
-
     return this.createToken(user.id);
   }
 
-
   async login(login: string, email: string, password: string) {
-
     const userLogin = await this.prisma.tbl_user.findFirst({
       where: {
         email: email,
+        password: getMd5(password),
       },
-    });   
+    });
 
     if (!userLogin) {
       throw new UnauthorizedException('Login e/ou Senha Incorretos.');
     }
 
     //  if (!await bcrypt.compare(password, userLogin.SENHA)) {
-     // throw new UnauthorizedException('E-mail e/ou senha incorretos.');
-  //} 
+    // throw new UnauthorizedException('E-mail e/ou senha incorretos.');
+    //}
 
     return this.createToken(userLogin.id);
     //return this.createToken(user);
   }
-
-
 
   async signIn(loginAuthDto: AuthLoginDTO) {
     const password = getMd5(loginAuthDto.password);
@@ -207,12 +203,4 @@ export class AuthService {
       throw new BadRequestException(e);
     }
   }
-
-
-
-
-
-
-
-
 }
