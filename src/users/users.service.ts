@@ -91,13 +91,12 @@ export class UsersService {
   }
 
   async update(id: number, data: UpdatePutUserDTO) {
-
-   await this.userExists(id);
+    await this.userExists(id);
 
     if (data.password) {
       data.password = getMd5(data.password);
     }
-   const resultUpdate = await this.prisma.tbl_user.update({
+    const resultUpdate = await this.prisma.tbl_user.update({
       where: {
         id: id,
       },
@@ -109,7 +108,6 @@ export class UsersService {
         updatedAt: new Date(),
       },
     });
-
 
     return resultUpdate;
   }

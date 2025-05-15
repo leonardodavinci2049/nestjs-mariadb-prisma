@@ -55,14 +55,13 @@ export class UsersController {
     return this.userService.update(id, updateUserDto);
   }
 
-@Patch('v1/updatepartial/:id')
+  @Patch('v1/updatepartial/:id')
   updateOne(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateUserDto: UpdatePutUserDTO,
   ) {
     return this.userService.updatePartial(id, updateUserDto);
   }
-
 
   //@UseGuards(AuthGuard)
   @Delete('v1/deleteOne/:id')

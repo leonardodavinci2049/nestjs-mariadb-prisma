@@ -30,7 +30,7 @@ export class AuthService {
       accessToken: this.jwtService.sign(
         {
           //Payload
-          sub: id,
+          id: id,
           username: 'user.name',
           // Removed because user.role does not exist
         },
@@ -123,13 +123,13 @@ export class AuthService {
 
     if (!resultData) {
       return new ResultModel(
-        100404,
-        'Erro: Resposta inválida do servidor',
+        100401,
+        'Login e/ou Senha Incorretos.',
         0,
-        '',
+        'Unauthorized',
       );
     }
-    const token = this.createToken(4);
+    const token = this.createToken(resultData.id);
 
     return new ResultModel(
       100200,

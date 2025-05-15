@@ -5,10 +5,7 @@ import { UsersModule } from 'src/users/users.module';
 import { AuthModule } from 'src/auth/auth.module';
 
 @Module({
-  imports: [
-       forwardRef(() => UsersModule),
-       forwardRef(() => AuthModule),
-  ],
+  imports: [forwardRef(() => UsersModule), forwardRef(() => AuthModule)],
   controllers: [AppController],
   providers: [AppService],
 })
